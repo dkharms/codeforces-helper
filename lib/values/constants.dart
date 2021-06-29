@@ -7,12 +7,13 @@ const double cardVerticalPadding = 15;
 const double cardHorizontalMargin = 35;
 const double cardVerticalMargin = 25;
 
+const double shadowSpreadRadius = 5;
+const double shadowBlurRadius = 20;
+
 const Color textColor = Color(0xFF343434);
 
-TextStyle contestTitleTextStyle = GoogleFonts.poppins(
-    fontSize: 18,
-    fontWeight: FontWeight.w600,
-    foreground: Paint()..shader = thirdDivisionGradient);
+TextStyle contestTitleTextStyle =
+    GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w600);
 
 TextStyle informationTextStyle = GoogleFonts.poppins(
     fontSize: 14, fontWeight: FontWeight.w400, color: textColor);
@@ -33,4 +34,9 @@ const Color greenColor = Color(0xFF43E97B);
 const Color cyanColor = Color(0xFF38F9D7);
 Shader thirdDivisionGradient =
     const LinearGradient(colors: <Color>[greenColor, cyanColor])
+        .createShader(const Rect.fromLTRB(0, 0, 270, 70));
+
+const Color pinkColor = Color(0xFFF578DC);
+Shader otherDivisionContest =
+    const LinearGradient(colors: <Color>[blueColor, pinkColor])
         .createShader(const Rect.fromLTRB(0, 0, 270, 70));

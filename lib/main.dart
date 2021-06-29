@@ -1,3 +1,4 @@
+import 'package:codeforces_helper/pages/contest_page.dart';
 import 'package:codeforces_helper/pages/main_page.dart';
 import 'package:flutter/material.dart';
 

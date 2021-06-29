@@ -12,7 +12,30 @@ class ApiController {
     if (response.statusCode == 200) {
       var contestEntries = jsonDecode(response.body)['result'];
       for (var contestEntry in contestEntries) {
-        if (contestEntry['phase'] == 'BEFORE') {
+        if (contestEntry['phase'] == "BEFORE") {
+          contestList.add(Contest.fromJson(contestEntry));
+        }
+      }
+    } else {
+      throw Exception("Failed to load contest");
+    }
+
+    return contestList;
+  }
+
+  static Future<List<Contest>> getContestsByTime(
+      DateTime startTime, DateTime endTime) async {
+    var contestList = <Contest>[];
+    var response =
+        await http.get(Uri.parse("https://codeforces.com/api/contest.list"));
+
+    if (response.statusCode == 200) {
+      var contestEntries = jsonDecode(response.body)['result'];
+      for (var contestEntry in contestEntries) {
+        DateTime contestTime = DateTime.fromMillisecondsSinceEpoch(
+            contestEntry['startTimeSeconds'] * 1000);
+        if (startTime.compareTo(contestTime) <= 0 &&
+            contestTime.compareTo(endTime) <= 0) {
           contestList.add(Contest.fromJson(contestEntry));
         }
       }

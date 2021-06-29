@@ -2,6 +2,7 @@ class Contest {
   late int id;
   late String name;
   late String description;
+  late String websiteUrl;
   late DateTime startTime;
   late Duration duration;
 
@@ -9,11 +10,13 @@ class Contest {
     id = json['id'];
     name = json['name'] ?? "EMPTY";
     description = json['description'] ?? "EMPTY";
+    websiteUrl = "https://codeforces.com/contest/$id";
     startTime =
-        DateTime.fromMillisecondsSinceEpoch(json['startTimeSeconds'] * 1000);
+        DateTime.fromMillisecondsSinceEpoch(json['startTimeSeconds'] * 1000)
+            .toLocal();
 
-    int hours = json['startTimeSeconds'] ~/ 3600;
-    int minutes = json['startTimeSeconds'] ~/ 60 % 60;
+    int hours = json['durationSeconds'] ~/ 3600;
+    int minutes = json['durationSeconds'] ~/ 60 % 60;
     duration = Duration(hours: hours, minutes: minutes);
   }
 
