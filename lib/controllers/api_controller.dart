@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:html';
 
 import 'package:codeforces_helper/models/contest.dart';
 import 'package:http/http.dart' as http;
@@ -10,7 +9,7 @@ class ApiController {
     var response =
         await http.get(Uri.parse("https://codeforces.com/api/contest.list"));
 
-    if (response.statusCode == HttpStatus.ok) {
+    if (response.statusCode == 200) {
       var contestEntries = jsonDecode(response.body)['result'];
       for (var contestEntry in contestEntries) {
         if (contestEntry['phase'] == 'BEFORE') {
