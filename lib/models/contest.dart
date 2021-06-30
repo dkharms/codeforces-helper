@@ -3,6 +3,7 @@ class Contest {
   late String name;
   late String description;
   late String websiteUrl;
+  late ContestState contestState;
   late DateTime startTime;
   late Duration duration;
 
@@ -11,17 +12,24 @@ class Contest {
     name = json['name'] ?? "EMPTY";
     description = json['description'] ?? "EMPTY";
     websiteUrl = "https://codeforces.com/contest/$id";
+    contestState = ContestState.FINISHED;
+
+    if (json['phase'] == "BEFORE") {
+      contestState = ContestState.BEFORE;
+    }
+
+    if (json['phase'] == "CODING") {
+      contestState = ContestState.BEFORE;
+    }
+
     startTime =
         DateTime.fromMillisecondsSinceEpoch(json['startTimeSeconds'] * 1000)
             .toLocal();
 
-    int hours = json['durationSeconds'] ~/ 3600;
-    int minutes = json['durationSeconds'] ~/ 60 % 60;
-    duration = Duration(hours: hours, minutes: minutes);
-  }
-
-  @override
-  String toString() {
-    return "Name: $name\tStart time: $startTime";
+    duration = Duration(
+        hours: json['durationSeconds'] ~/ 3600,
+        minutes: json['durationSeconds'] ~/ 60 % 60);
   }
 }
+
+enum ContestState { BEFORE, CODING, FINISHED }

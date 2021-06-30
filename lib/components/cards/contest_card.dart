@@ -39,6 +39,23 @@ class ContestCard extends StatelessWidget {
     }
   }
 
+  Widget _buildBottomRightWidget() {
+    if (contest.contestState == ContestState.BEFORE)
+      return RawMaterialButton(
+        onPressed: () {},
+        shape: CircleBorder(),
+        child: Icon(Icons.notifications_none_rounded),
+      );
+
+    if (contest.contestState == ContestState.CODING) return Text("🔥");
+
+    return RawMaterialButton(
+      onPressed: () {},
+      shape: CircleBorder(),
+      child: Icon(Icons.share_outlined),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     _setupColors();
@@ -65,9 +82,7 @@ class ContestCard extends StatelessWidget {
             color: Colors.transparent,
             child: InkWell(
               onTap: () async {
-                // if (await canLaunch(contest.websiteUrl)) {
                 launch(contest.websiteUrl);
-                // }
               },
               child: Container(
                 width: double.infinity,
@@ -98,11 +113,7 @@ class ContestCard extends StatelessWidget {
         Positioned(
           bottom: 5.0,
           right: -10.0,
-          child: RawMaterialButton(
-            onPressed: () {},
-            shape: CircleBorder(),
-            child: Icon(Icons.notifications_none_rounded),
-          ),
+          child: _buildBottomRightWidget(),
         )
       ]),
     );

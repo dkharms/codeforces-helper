@@ -1,5 +1,6 @@
 import 'package:codeforces_helper/pages/contest_page.dart';
 import 'package:codeforces_helper/pages/main_page.dart';
+import 'package:codeforces_helper/values/themes.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(const CodeforcesHelper());
@@ -9,7 +10,9 @@ class CodeforcesHelper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
+      title: "Codeforces Helper",
+      theme: lightTheme,
       home: MainPage(),
     );
   }
