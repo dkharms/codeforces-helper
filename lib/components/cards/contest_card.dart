@@ -67,7 +67,7 @@ class ContestCard extends StatelessWidget {
       ),
       decoration: BoxDecoration(color: Colors.white, boxShadow: [
         BoxShadow(
-          color: Colors.grey.withOpacity(0.25),
+          color: shadowColor.withOpacity(0.25),
           spreadRadius: shadowSpreadRadius,
           blurRadius: shadowBlurRadius,
         ),

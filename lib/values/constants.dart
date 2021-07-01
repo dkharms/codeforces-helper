@@ -12,6 +12,8 @@ const double shadowBlurRadius = 20;
 
 const Color textColor = Color(0xFF343434);
 
+const Color shadowColor = Color(0xFFD4D4D4);
+
 TextStyle contestTitleTextStyle =
     GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w600);
 

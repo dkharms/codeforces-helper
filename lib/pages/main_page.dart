@@ -17,7 +17,6 @@ class MainPageState extends State<MainPage> {
   late List<Widget> _pages = [
     ContestPage(),
     ProblemPage(),
-    SettingsPage(),
   ];
 
   late List<BottomNavigationBarItem> _bottomNavigationItems = [
@@ -29,10 +28,6 @@ class MainPageState extends State<MainPage> {
       icon: Icon(Icons.list_alt_rounded),
       label: "Problems",
     ),
-    BottomNavigationBarItem(
-      icon: Icon(Icons.settings),
-      label: "Settings",
-    ),
   ];
 
   @override
@@ -42,7 +37,6 @@ class MainPageState extends State<MainPage> {
       bottomNavigationBar: BottomNavigationBar(
         selectedItemColor: Theme.of(context).primaryColor,
         showUnselectedLabels: false,
-        selectedLabelStyle: GoogleFonts.poppins(),
         currentIndex: _pageIndex,
         onTap: (int index) {
           setState(() {

@@ -4,6 +4,7 @@ import 'package:codeforces_helper/controllers/api_controller.dart';
 import 'package:codeforces_helper/models/contest.dart';
 import 'package:codeforces_helper/values/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class ContestPage extends StatefulWidget {
@@ -14,19 +15,20 @@ class ContestPage extends StatefulWidget {
 }
 
 class _ContestPageState extends State<ContestPage> {
-  late List<Contest> _contestList = <Contest>[];
-
   late DateTime _startTime = DateTime.now();
   late DateTime _endTime = DateTime.now().add(Duration(days: 31));
 
-  void _getContestInfoByTime(DateTime? startTime, DateTime? endTime) async {
-    _contestList = await ApiController.getContestsByTime(startTime!, endTime!);
-    if (mounted) setState(() {});
+  Future<List<Contest>> _getContestInfoByTime(
+      DateTime? startTime, DateTime? endTime) async {
+    var contestList =
+        await ApiController.getContestsByTime(startTime!, endTime!);
+
+    return contestList;
   }
 
   FloatingActionButton _buildFloatingActionButton(String title) {
     return FloatingActionButton.extended(
-      label: Text(title, style: GoogleFonts.poppins()),
+      label: Text(title),
       icon: Icon(Icons.date_range),
       backgroundColor: blueColor,
       onPressed: () async {
@@ -39,8 +41,28 @@ class _ContestPageState extends State<ContestPage> {
         if (date?.start != null && date?.end != null) {
           _startTime = date!.start;
           _endTime = date.end;
-          _getContestInfoByTime(_startTime, _endTime);
+          if (mounted) setState(() {});
         }
+      },
+    );
+  }
+
+  Widget _buildContestCards(List<Contest> contestList) {
+    if (contestList.length == 0)
+      return Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Image.asset("assets/images/empty.gif"),
+            Text("No contests during this period")
+          ],
+        ),
+      );
+
+    return ListView.builder(
+      itemCount: contestList.length,
+      itemBuilder: (BuildContext context, int index) {
+        return ContestCard(contest: contestList[index]);
       },
     );
   }
@@ -48,7 +70,6 @@ class _ContestPageState extends State<ContestPage> {
   @override
   void initState() {
     super.initState();
-    _getContestInfoByTime(_startTime, _endTime);
   }
 
   @override
@@ -63,14 +84,18 @@ class _ContestPageState extends State<ContestPage> {
       floatingActionButton: _buildFloatingActionButton("Date Range"),
       body: RefreshIndicator(
         onRefresh: () async {
-          _getContestInfoByTime(_startTime, _endTime);
+          if (mounted) setState(() {});
         },
         child: Container(
           width: double.infinity,
-          child: ListView.builder(
-            itemCount: _contestList.length,
-            itemBuilder: (BuildContext context, int index) {
-              return ContestCard(contest: _contestList[index]);
+          child: FutureBuilder<List<Contest>>(
+            future: _getContestInfoByTime(_startTime, _endTime),
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              if (!snapshot.hasData ||
+                  snapshot.connectionState == ConnectionState.waiting)
+                return Center(child: Image.asset("assets/images/loading.gif"));
+
+              return _buildContestCards(snapshot.data);
             },
           ),
         ),
