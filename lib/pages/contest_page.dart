@@ -18,14 +18,6 @@ class _ContestPageState extends State<ContestPage> {
   late DateTime _startTime = DateTime.now();
   late DateTime _endTime = DateTime.now().add(Duration(days: 31));
 
-  Future<List<Contest>> _getContestInfoByTime(
-      DateTime? startTime, DateTime? endTime) async {
-    var contestList =
-        await ApiController.getContestsByTime(startTime!, endTime!);
-
-    return contestList;
-  }
-
   FloatingActionButton _buildFloatingActionButton(String title) {
     return FloatingActionButton.extended(
       label: Text(title),
@@ -62,7 +54,8 @@ class _ContestPageState extends State<ContestPage> {
     return ListView.builder(
       itemCount: contestList.length,
       itemBuilder: (BuildContext context, int index) {
-        return ContestCard(contest: contestList[index]);
+        return ContestCard(
+            contest: contestList[contestList.length - index - 1]);
       },
     );
   }
@@ -80,7 +73,6 @@ class _ContestPageState extends State<ContestPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: _buildFloatingActionButton("Date Range"),
       body: RefreshIndicator(
         onRefresh: () async {
@@ -89,7 +81,7 @@ class _ContestPageState extends State<ContestPage> {
         child: Container(
           width: double.infinity,
           child: FutureBuilder<List<Contest>>(
-            future: _getContestInfoByTime(_startTime, _endTime),
+            future: ApiController.getContestsByTime(_startTime, _endTime),
             builder: (BuildContext context, AsyncSnapshot snapshot) {
               if (!snapshot.hasData ||
                   snapshot.connectionState == ConnectionState.waiting)
