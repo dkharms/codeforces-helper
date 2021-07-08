@@ -1,7 +1,9 @@
-import 'package:codeforces_helper/components/painters/wave_painter.dart';
 import 'package:codeforces_helper/models/contest.dart';
-import 'package:codeforces_helper/values/constants.dart';
+import 'package:codeforces_helper/utils/app_settings.dart';
+import 'package:codeforces_helper/utils/app_styles.dart';
+import 'package:codeforces_helper/widgets/painters/wave_painter.dart';
 import 'package:flutter/material.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ContestCard extends StatelessWidget {
@@ -16,26 +18,26 @@ class ContestCard extends StatelessWidget {
   }) : super(key: key);
 
   _setupColors() {
-    _firstColor = blueColor;
-    _secondColor = pinkColor;
-    _gradient = otherDivisionContest;
+    _firstColor = AppStyles.pinkColor;
+    _secondColor = AppStyles.blueColor;
+    _gradient = AppStyles.otherDivisionContest;
 
     if (contest.name.contains("Div. 1")) {
-      _firstColor = yellowColor;
-      _secondColor = peachColor;
-      _gradient = firstDivisionGradient;
+      _firstColor = AppStyles.yellowColor;
+      _secondColor = AppStyles.peachColor;
+      _gradient = AppStyles.firstDivisionGradient;
     }
 
     if (contest.name.contains("Div. 2")) {
-      _firstColor = purpleColor;
-      _secondColor = blueColor;
-      _gradient = secondDivisionGradient;
+      _firstColor = AppStyles.purpleColor;
+      _secondColor = AppStyles.blueColor;
+      _gradient = AppStyles.secondDivisionGradient;
     }
 
     if (contest.name.contains("Div. 3")) {
-      _firstColor = greenColor;
-      _secondColor = cyanColor;
-      _gradient = thirdDivisionGradient;
+      _firstColor = AppStyles.greenColor;
+      _secondColor = AppStyles.cyanColor;
+      _gradient = AppStyles.thirdDivisionGradient;
     }
   }
 
@@ -47,10 +49,19 @@ class ContestCard extends StatelessWidget {
         child: Icon(Icons.notifications_none_rounded),
       );
 
-    if (contest.contestState == ContestState.CODING) return Text("🔥");
+    if (contest.contestState == ContestState.CODING)
+      return RawMaterialButton(
+        onPressed: () async {
+          await Share.share(contest.websiteUrl);
+        },
+        shape: CircleBorder(),
+        child: Text("🔥"),
+      );
 
     return RawMaterialButton(
-      onPressed: () {},
+      onPressed: () async {
+        await Share.share(contest.websiteUrl);
+      },
       shape: CircleBorder(),
       child: Icon(Icons.share_outlined),
     );
@@ -62,19 +73,20 @@ class ContestCard extends StatelessWidget {
     return Container(
       height: MediaQuery.of(context).size.height / 5,
       margin: const EdgeInsets.symmetric(
-        horizontal: cardHorizontalMargin,
-        vertical: cardVerticalMargin,
+        horizontal: AppSettings.cardHorizontalMargin,
+        vertical: AppSettings.cardVerticalMargin,
       ),
       decoration: BoxDecoration(color: Colors.white, boxShadow: [
         BoxShadow(
-          color: shadowColor.withOpacity(0.25),
-          spreadRadius: shadowSpreadRadius,
-          blurRadius: shadowBlurRadius,
+          color: AppStyles.shadowColor.withOpacity(0.25),
+          spreadRadius: AppSettings.shadowSpreadRadius,
+          blurRadius: AppSettings.shadowBlurRadius,
         ),
       ]),
       child: Stack(children: [
         CustomPaint(
           painter: WavePainter(
+            canvasHeight: MediaQuery.of(context).size.height / 5,
             firstColor: _firstColor,
             secondColor: _secondColor,
           ),
@@ -87,23 +99,27 @@ class ContestCard extends StatelessWidget {
               child: Container(
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(
-                    horizontal: cardHorizontalPadding,
-                    vertical: cardVerticalPadding),
+                    horizontal: AppSettings.cardHorizontalPadding,
+                    vertical: AppSettings.cardVerticalPadding),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(contest.name,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: contestTitleTextStyle.copyWith(
-                            foreground: Paint()..shader = _gradient)),
+                    Text(
+                      contest.name,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: AppStyles.contestTitleTextStyle
+                          .copyWith(foreground: Paint()..shader = _gradient),
+                    ),
                     Expanded(child: Container()),
                     Text(
-                        "Duration ${contest.duration.inHours}h ${contest.duration.inMinutes - contest.duration.inHours * 60}m",
-                        style: informationTextStyle),
+                      contest.getDuration,
+                      style: AppStyles.informationTextStyle,
+                    ),
                     Text(
-                        "Starts ${contest.startTime.day}-${contest.startTime.month} in ${contest.startTime.hour}h ${contest.startTime.minute}m",
-                        style: informationTextStyle)
+                      contest.getStartTime,
+                      style: AppStyles.informationTextStyle,
+                    )
                   ],
                 ),
               ),

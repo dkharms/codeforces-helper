@@ -9,8 +9,8 @@ class Problem {
   Problem.fromJson(Map<String, dynamic> json) {
     contestId = json['contestId'];
     name = json['name'];
-    index = json['index'];
-    rating = json['rating'] ?? 800;
+    index = json['index'] ?? 800;
+    rating = json['rating'];
     websiteUrl = 'https://codeforces.com/problemset/problem/$contestId/$index';
     tags = json['tags'];
   }

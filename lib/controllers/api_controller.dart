@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:codeforces_helper/models/contest.dart';
 import 'package:codeforces_helper/models/problem.dart';
+import 'package:codeforces_helper/values/tags.dart';
 import 'package:http/http.dart' as http;
 
 class ApiController {
@@ -24,13 +25,14 @@ class ApiController {
         }
       }
     } else {
-      throw Exception('Failed to load contest');
+      throw Exception('Failed to load contests');
     }
 
     return contestList;
   }
 
-  static Future<List<Problem>> getProblemsByRating([int rating = 800]) async {
+  static Future<List<Problem>> getProblemsByRating(
+      [int rating = 800, List<String> tags = tags]) async {
     var problemList = <Problem>[];
     var response = await http
         .get(Uri.parse('https://codeforces.com/api/problemset.problems'));
@@ -40,7 +42,9 @@ class ApiController {
 
       for (var problemEntry in problemEntries) {
         Problem problem = Problem.fromJson(problemEntry);
-        if (problem.rating == rating) problemList.add(problem);
+        if (problem.rating == rating &&
+            tags.any((tag) => problem.tags.contains(tag)))
+          problemList.add(problem);
       }
     } else {
       throw new Exception('Failed to load problems');

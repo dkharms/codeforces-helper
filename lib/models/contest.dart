@@ -1,3 +1,5 @@
+import 'package:codeforces_helper/utils/app_values.dart';
+
 class Contest {
   late int id;
   late String name;
@@ -19,7 +21,7 @@ class Contest {
     }
 
     if (json['phase'] == "CODING") {
-      contestState = ContestState.BEFORE;
+      contestState = ContestState.CODING;
     }
 
     startTime =
@@ -30,6 +32,14 @@ class Contest {
         hours: json['durationSeconds'] ~/ 3600,
         minutes: json['durationSeconds'] ~/ 60 % 60);
   }
+
+  String get getStartTime =>
+      '${AppValues.startTime}' +
+      '${startTime.day}d-${startTime.month}m  ${startTime.hour}h-${startTime.minute}m';
+
+  String get getDuration =>
+      '${AppValues.duration}' +
+      '${duration.inHours}h ${duration.inMinutes % 60}m';
 }
 
 enum ContestState { BEFORE, CODING, FINISHED }

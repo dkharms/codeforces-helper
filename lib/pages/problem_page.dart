@@ -1,7 +1,8 @@
-import 'package:codeforces_helper/components/cards/problem_card.dart';
 import 'package:codeforces_helper/controllers/api_controller.dart';
 import 'package:codeforces_helper/models/problem.dart';
-import 'package:codeforces_helper/values/constants.dart';
+import 'package:codeforces_helper/values/tags.dart';
+import 'package:codeforces_helper/widgets/cards/problem_card.dart';
+import 'package:codeforces_helper/widgets/tags/tag_button.dart';
 import 'package:flutter/material.dart';
 
 class ProblemPage extends StatefulWidget {
@@ -12,7 +13,18 @@ class ProblemPage extends StatefulWidget {
 }
 
 class _ProblemPageState extends State<ProblemPage> {
-  int _rating = 800;
+  late int _rating;
+  late List<String> _tags;
+
+  List<Widget> _buildTagButtons() {
+    return List<Widget>.generate(
+      tags.length,
+      (index) => TagButton(
+        tagName: tags[index],
+        filters: _tags,
+      ),
+    );
+  }
 
   FloatingActionButton _buildFloatingActionButton(String title) {
     return FloatingActionButton.extended(
@@ -25,20 +37,29 @@ class _ProblemPageState extends State<ProblemPage> {
           builder: (BuildContext context) {
             return AlertDialog(
               title: Text(title),
-              content: TextField(
-                keyboardType: TextInputType.number,
-                maxLines: 1,
-                onChanged: (String rating) {
-                  if (rating.isNotEmpty) _rating = int.parse(rating);
-                },
+              content: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    TextField(
+                      decoration: InputDecoration(hintText: 'Rating'),
+                      keyboardType: TextInputType.number,
+                      maxLines: 1,
+                      onChanged: (String rating) {
+                        if (rating.isNotEmpty) _rating = int.parse(rating);
+                      },
+                    ),
+                    Wrap(children: _buildTagButtons())
+                  ],
+                ),
               ),
               actions: [
                 TextButton(
-                    onPressed: () {
-                      if (mounted) setState(() {});
-                      Navigator.of(context).pop();
-                    },
-                    child: Text('OK'))
+                  onPressed: () {
+                    if (mounted) setState(() {});
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('OK'),
+                ),
               ],
             );
           },
@@ -66,14 +87,27 @@ class _ProblemPageState extends State<ProblemPage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    _rating = 800;
+    _tags = List.from(tags);
+  }
+
+  @override
+  void dispose() {
+    _tags.clear();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      floatingActionButton: _buildFloatingActionButton('Rating'),
+      floatingActionButton: _buildFloatingActionButton('Rating and Tags'),
       body: Container(
         width: double.infinity,
         child: FutureBuilder<List<Problem>>(
-          future: ApiController.getProblemsByRating(_rating),
+          future: ApiController.getProblemsByRating(_rating, _tags),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if (!snapshot.hasData ||
                 snapshot.connectionState == ConnectionState.waiting)
