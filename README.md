@@ -1,16 +1,13 @@
-# codeforces_helper
+# CFler 📈
+Application for tracking contests and reviewing problems on Codeforces.
 
-Helper for codeforces.
+## Usage
+You can use this app for reviewing contests in certain time intervals, reviewing problems with certain rating and tags.
 
-## Getting Started
+For contests which are not started yet, you can set notifications and stop being scared, that you can skip it.
 
-This project is a starting point for a Flutter application.
+Of course, you can share contests, problems with you friends and open them in your browser.
 
-A few resources to get you started if this is your first Flutter project:
+## Premium Features
+[ToDo]
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.

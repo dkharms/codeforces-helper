@@ -53,7 +53,7 @@ class _ProblemCardState extends State<ProblemCard> {
   @override
   void initState() {
     super.initState();
-    _additionalSize = widget.problem.tags.length * 25;
+    _additionalSize = widget.problem.tags.length * 20;
     _isExpanded = false;
   }
 
