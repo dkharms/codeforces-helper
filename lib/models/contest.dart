@@ -35,7 +35,8 @@ class Contest {
 
   String get getStartTime =>
       '${AppValues.startTime}' +
-      '${startTime.day}d-${startTime.month}m  ${startTime.hour}h-${startTime.minute}m';
+      '${startTime.day}-${startTime.month}-${startTime.year} ' +
+      '${startTime.hour}h-${startTime.minute}m';
 
   String get getDuration =>
       '${AppValues.duration}' +

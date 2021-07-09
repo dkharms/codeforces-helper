@@ -1,9 +1,9 @@
 import 'package:codeforces_helper/controllers/api_controller.dart';
 import 'package:codeforces_helper/models/contest.dart';
+import 'package:codeforces_helper/utils/app_styles.dart';
 import 'package:codeforces_helper/utils/app_values.dart';
 import 'package:codeforces_helper/widgets/cards/contest_card.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class ContestPage extends StatefulWidget {
   const ContestPage({Key? key}) : super(key: key);
@@ -45,7 +45,10 @@ class _ContestPageState extends State<ContestPage> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Image.asset(AppValues.emptyGifPath),
-            Text(AppValues.contestLoadError)
+            Text(
+              AppValues.contestLoadError,
+              style: AppStyles.informationTextStyle,
+            )
           ],
         ),
       );
@@ -58,16 +61,19 @@ class _ContestPageState extends State<ContestPage> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Image.asset(AppValues.emptyGifPath),
-            Text(AppValues.contestsNotFound),
+            Text(
+              AppValues.contestsNotFound,
+              style: AppStyles.informationTextStyle,
+            ),
           ],
         ),
       );
 
     return ListView.builder(
-      reverse: true,
       itemCount: contestList.length,
       itemBuilder: (BuildContext context, int index) {
-        return ContestCard(contest: contestList[index]);
+        return ContestCard(
+            contest: contestList[contestList.length - index - 1]);
       },
     );
   }
@@ -91,6 +97,8 @@ class _ContestPageState extends State<ContestPage> {
       ),
       body: RefreshIndicator(
         onRefresh: _onRefresh,
+        color: Theme.of(context).primaryColor,
+        strokeWidth: 3.0,
         child: Container(
           width: double.infinity,
           child: FutureBuilder<List<Contest>>(

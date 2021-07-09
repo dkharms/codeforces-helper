@@ -41,6 +41,14 @@ class ContestCard extends StatelessWidget {
     }
   }
 
+  Future<void> _shareUrl() async {
+    await Share.share(contest.websiteUrl);
+  }
+
+  void _launchUrl() async {
+    launch(contest.websiteUrl);
+  }
+
   Widget _buildBottomRightWidget() {
     if (contest.contestState == ContestState.BEFORE)
       return RawMaterialButton(
@@ -51,17 +59,13 @@ class ContestCard extends StatelessWidget {
 
     if (contest.contestState == ContestState.CODING)
       return RawMaterialButton(
-        onPressed: () async {
-          await Share.share(contest.websiteUrl);
-        },
+        onPressed: _shareUrl,
         shape: CircleBorder(),
         child: Text("🔥"),
       );
 
     return RawMaterialButton(
-      onPressed: () async {
-        await Share.share(contest.websiteUrl);
-      },
+      onPressed: _shareUrl,
       shape: CircleBorder(),
       child: Icon(Icons.share_outlined),
     );
@@ -71,67 +75,71 @@ class ContestCard extends StatelessWidget {
   Widget build(BuildContext context) {
     _setupColors();
     return Container(
-      height: MediaQuery.of(context).size.height / 5,
+      height: AppSettings.getHeight(MediaQuery.of(context).size, 0.2),
       margin: const EdgeInsets.symmetric(
         horizontal: AppSettings.cardHorizontalMargin,
         vertical: AppSettings.cardVerticalMargin,
       ),
-      decoration: BoxDecoration(color: Colors.white, boxShadow: [
-        BoxShadow(
-          color: AppStyles.shadowColor.withOpacity(0.25),
-          spreadRadius: AppSettings.shadowSpreadRadius,
-          blurRadius: AppSettings.shadowBlurRadius,
-        ),
-      ]),
-      child: Stack(children: [
-        CustomPaint(
-          painter: WavePainter(
-            canvasHeight: MediaQuery.of(context).size.height / 5,
-            firstColor: _firstColor,
-            secondColor: _secondColor,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: AppStyles.shadowColor.withOpacity(0.25),
+            spreadRadius: AppSettings.shadowSpreadRadius,
+            blurRadius: AppSettings.shadowBlurRadius,
           ),
-          child: Material(
-            color: Colors.transparent,
-            child: InkWell(
-              onTap: () async {
-                launch(contest.websiteUrl);
-              },
-              child: Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(
-                    horizontal: AppSettings.cardHorizontalPadding,
-                    vertical: AppSettings.cardVerticalPadding),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      contest.name,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: AppStyles.contestTitleTextStyle
-                          .copyWith(foreground: Paint()..shader = _gradient),
-                    ),
-                    Expanded(child: Container()),
-                    Text(
-                      contest.getDuration,
-                      style: AppStyles.informationTextStyle,
-                    ),
-                    Text(
-                      contest.getStartTime,
-                      style: AppStyles.informationTextStyle,
-                    )
-                  ],
+        ],
+      ),
+      child: Stack(
+        children: [
+          CustomPaint(
+            painter: WavePainter(
+              canvasHeight:
+                  AppSettings.getHeight(MediaQuery.of(context).size, 0.2),
+              firstColor: _firstColor,
+              secondColor: _secondColor,
+            ),
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: _launchUrl,
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: AppSettings.cardHorizontalPadding,
+                      vertical: AppSettings.cardVerticalPadding),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        contest.name,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: AppStyles.contestTitleTextStyle
+                            .copyWith(foreground: Paint()..shader = _gradient),
+                      ),
+                      Expanded(child: Container()),
+                      Text(
+                        contest.getDuration,
+                        style: AppStyles.informationTextStyle,
+                      ),
+                      Text(
+                        contest.getStartTime,
+                        style: AppStyles.informationTextStyle,
+                      )
+                    ],
+                  ),
                 ),
               ),
             ),
           ),
-        ),
-        Positioned(
-          bottom: 5.0,
-          right: -10.0,
-          child: _buildBottomRightWidget(),
-        )
-      ]),
+          Positioned(
+            bottom: 5.0,
+            right: -10.0,
+            child: _buildBottomRightWidget(),
+          )
+        ],
+      ),
     );
   }
 }

@@ -11,8 +11,9 @@ class TagMark extends StatelessWidget {
       margin: EdgeInsets.only(top: 5.0, right: 10.0, bottom: 5.0),
       padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20.0),
-          color: Theme.of(context).primaryColor),
+        borderRadius: BorderRadius.circular(20.0),
+        color: Theme.of(context).primaryColor,
+      ),
       child: Text(tagName, style: AppStyles.informationTextStyle),
     );
   }

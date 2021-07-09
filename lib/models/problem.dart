@@ -1,3 +1,5 @@
+import 'package:codeforces_helper/utils/app_values.dart';
+
 class Problem {
   late int contestId;
   late String name;
@@ -9,9 +11,11 @@ class Problem {
   Problem.fromJson(Map<String, dynamic> json) {
     contestId = json['contestId'];
     name = json['name'];
-    index = json['index'] ?? 800;
-    rating = json['rating'];
+    index = json['index'];
+    rating = json['rating'] ?? 800;
     websiteUrl = 'https://codeforces.com/problemset/problem/$contestId/$index';
     tags = json['tags'];
   }
+
+  String get getRating => '${AppValues.rating}$rating';
 }

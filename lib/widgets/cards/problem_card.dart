@@ -21,7 +21,7 @@ class ProblemCard extends StatefulWidget {
 
 class _ProblemCardState extends State<ProblemCard> {
   late double _additionalSize;
-  bool _isExpanded = false;
+  late bool _isExpanded;
 
   List<Widget> _buildTagButtons() {
     return List.generate(
@@ -36,7 +36,11 @@ class _ProblemCardState extends State<ProblemCard> {
     );
   }
 
-  Future<void> _handleUrlLaunch() async {
+  Future<void> _shareUrl() async {
+    await Share.share(widget.problem.websiteUrl);
+  }
+
+  Future<void> _launchUrl() async {
     launch(widget.problem.websiteUrl);
   }
 
@@ -47,78 +51,88 @@ class _ProblemCardState extends State<ProblemCard> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    _additionalSize = widget.problem.tags.length * 25;
+    _isExpanded = false;
+  }
+
+  @override
   Widget build(BuildContext context) {
-    _additionalSize = widget.problem.tags.length * 15;
     return AnimatedContainer(
       curve: Curves.decelerate,
       duration: Duration(milliseconds: 150),
-      height: AppSettings.getHeight(context.size, 0.2) +
+      height: AppSettings.getHeight(MediaQuery.of(context).size, 0.2) +
           (_isExpanded ? _additionalSize : 0),
       margin: const EdgeInsets.symmetric(
         horizontal: AppSettings.cardHorizontalMargin,
         vertical: AppSettings.cardVerticalMargin,
       ),
-      decoration: BoxDecoration(color: Colors.white, boxShadow: [
-        BoxShadow(
-          color: AppStyles.shadowColor.withOpacity(0.25),
-          spreadRadius: AppSettings.shadowSpreadRadius,
-          blurRadius: AppSettings.shadowBlurRadius,
-        ),
-      ]),
-      child: Stack(children: [
-        CustomPaint(
-          painter: WavePainter(
-            canvasHeight: MediaQuery.of(context).size.height / 5,
-            firstColor: AppStyles.yellowColor,
-            secondColor: AppStyles.peachColor,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: AppStyles.shadowColor.withOpacity(0.25),
+            spreadRadius: AppSettings.shadowSpreadRadius,
+            blurRadius: AppSettings.shadowBlurRadius,
           ),
-          child: Material(
-            color: Colors.transparent,
-            child: InkWell(
-              onTap: _handleUrlLaunch,
-              onLongPress: _handleCardExpansion,
-              child: Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(
-                    horizontal: AppSettings.cardHorizontalPadding,
-                    vertical: AppSettings.cardVerticalPadding),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      widget.problem.name,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: AppStyles.contestTitleTextStyle.copyWith(
-                          foreground: Paint()
-                            ..shader = AppStyles.firstDivisionGradient),
-                    ),
-                    Expanded(
-                      child: Container(
-                        alignment: Alignment.topLeft,
-                        child: Wrap(children: _buildTagButtons()),
+        ],
+      ),
+      child: Stack(
+        children: [
+          CustomPaint(
+            painter: WavePainter(
+              canvasHeight:
+                  AppSettings.getHeight(MediaQuery.of(context).size, 0.2),
+              firstColor: AppStyles.yellowColor,
+              secondColor: AppStyles.peachColor,
+            ),
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: _launchUrl,
+                onLongPress: _handleCardExpansion,
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: AppSettings.cardHorizontalPadding,
+                      vertical: AppSettings.cardVerticalPadding),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        widget.problem.name,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: AppStyles.contestTitleTextStyle.copyWith(
+                            foreground: Paint()
+                              ..shader = AppStyles.firstDivisionGradient),
                       ),
-                    ),
-                    Text('Rating ${widget.problem.rating}',
-                        style: AppStyles.informationTextStyle),
-                  ],
+                      Expanded(
+                        child: Container(
+                          alignment: Alignment.topLeft,
+                          child: Wrap(children: _buildTagButtons()),
+                        ),
+                      ),
+                      Text(widget.problem.getRating,
+                          style: AppStyles.informationTextStyle),
+                    ],
+                  ),
                 ),
               ),
             ),
           ),
-        ),
-        Positioned(
-          bottom: 5.0,
-          right: -10.0,
-          child: RawMaterialButton(
-            onPressed: () async {
-              await Share.share(widget.problem.websiteUrl);
-            },
-            shape: CircleBorder(),
-            child: Icon(Icons.share_outlined),
-          ),
-        )
-      ]),
+          Positioned(
+            bottom: 5.0,
+            right: -10.0,
+            child: RawMaterialButton(
+              onPressed: _shareUrl,
+              shape: CircleBorder(),
+              child: Icon(Icons.share_outlined),
+            ),
+          )
+        ],
+      ),
     );
   }
 }
